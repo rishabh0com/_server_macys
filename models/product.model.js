@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const productSchema =new mongoose.Schema(
   {
     category: { type: String, required: true },
+    subCategory: { type: String, required: true },
     title: { type: String, required: true },
     price: { type: Number, required: true },
     images: { type: Array, required: true },
-    colors:  [{name:String,code:String}],
+    sizes: { type: Array},
+    color: { type: String},
   },
   { versionKey: false }
 );
