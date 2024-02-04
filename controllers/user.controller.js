@@ -30,7 +30,7 @@ const createUser = async (req, res) => {
     res.send(new ApiResponse(200, user, "User created successfully"));
   } catch (error) {
     console.log(error);
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
@@ -42,7 +42,7 @@ const findUser = async (req, res) => {
     if (!user) throw new ApiError(400, "User not found");
     res.send(new ApiResponse(200, user, "User found"));
   } catch (error) {
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
@@ -54,7 +54,7 @@ const findAllUsers = async (req, res) => {
 
     res.send(new ApiResponse(200, users, "Users retrieved successfully"));
   } catch (error) {
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
@@ -67,7 +67,7 @@ const updateUser = async (req, res) => {
     if (!user) throw new ApiError(400, "User not found");
     res.send(new ApiResponse(200, user, "User updated successfully"));
   } catch (error) {
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
@@ -80,7 +80,7 @@ const deleteUser = async (req, res) => {
 
     res.send(new ApiResponse(200, user, "User deleted successfully"));
   } catch (error) {
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
@@ -94,21 +94,18 @@ const loginUser = async (req, res) => {
     const isPass = bcrypt.compareSync(password, user.password); // true
     if (!isPass) throw new ApiError(400, "invalid password");
 
-    const refreshToken = jwt.sign({}, process.env.refrestSecret, {
-      expiresIn: 60 * 5,
+    const refreshToken = jwt.sign({}, process.env.refreshSecret, {
+      expiresIn: 119,
     });
     const accessToken = jwt.sign({}, process.env.accessSecret, {
-      expiresIn: 60,
+      expiresIn: 40,
     });
-    // console.log(accessToken, refreshToken);
-    if (!refreshToken && !accessToken)
-      throw new ApiError(400, "token are required");
-
+    console.log(accessToken, refreshToken);
     res.cookie("accessToken", accessToken);
     res.cookie("refreshToken", refreshToken);
     res.send(new ApiResponse(200, user, "User logged in successfully"));
   } catch (error) {
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
@@ -134,7 +131,7 @@ const logoutUser = async (req, res) => {
     await TokenModel.create({ token });
     res.send(new ApiResponse(200, null, "User logged out successfully"));
   } catch (error) {
-    res.send({ message: error.message, error: [error] });
+    res.status(500).send({ message: error.message, ...error });
   }
 };
 
