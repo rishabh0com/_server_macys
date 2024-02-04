@@ -27,9 +27,10 @@ const authUser = (req, res, next) => {
                         if (!newAccessToken)
                             throw new ApiError(500, "internal server error");
                         res.cookie("accessToken", newAccessToken);
-                        res.send(
-                            new ApiResponse(200, null, "token generated successfully") //
-                        );
+                        next(); // if token is valid
+                        // res.send(
+                        //     new ApiResponse(200, null, "token generated successfully") //
+                        // );
                     } else if (err.message === "jwt expired") {
                         throw new ApiError(400, "token expired login again", err);
                     } else throw new ApiError(401, "invalid token", err); // if token is invalid
