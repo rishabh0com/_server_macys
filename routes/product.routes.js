@@ -4,21 +4,22 @@ const { authUser } = require("../middlewares/auth.middleware");
 const productRoutes = express.Router();
 
 // middleware
-productRoutes.use(authUser);
 
 // Create a new Product
-productRoutes.post("/add", productController.createProduct);
+productRoutes.post("/add",authUser, productController.createProduct);
 
+// Retrieve a single Product with id
+productRoutes.get("/:id", productController.findProductById);
 // Retrieve all Products
-productRoutes.get("/", productController.findAllProducts);
+// productRoutes.get("/", productController.findAllProducts);
 
 // find products by query
-productRoutes.get("/query", productController.findProductsByQuery);
+productRoutes.get("/", productController.findProductsByQuery);
 
 // Update a Product with id
-productRoutes.put("/update/:id", productController.updateProduct);
+productRoutes.put("/update/:id",authUser, productController.updateProduct);
 
 // Delete a Product with id
-productRoutes.delete("/delete/:id", productController.deleteProduct);
+productRoutes.delete("/delete/:id",authUser, productController.deleteProduct);
 
 module.exports = { productRoutes };

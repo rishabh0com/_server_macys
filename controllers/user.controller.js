@@ -19,6 +19,9 @@ const createUser = async (req, res) => {
   // console.log(req.body, req.headers);
   try {
     // hash the password
+    const userExist = await UserModel.findOne({ email });
+    if (userExist) throw new ApiError(400, "User already exist, Please login");
+    // if(firstName == undefined) throw new ApiError(400, "Please provide all the required fields");
     const hashPass = bcrypt.hashSync(password, 9);
     const user = await UserModel.create({
       firstName,
@@ -29,7 +32,7 @@ const createUser = async (req, res) => {
     });
     res.send(new ApiResponse(200, user, "User created successfully"));
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send({ message: error.message, ...error });
   }
 };
@@ -60,7 +63,7 @@ const findAllUsers = async (req, res) => {
 
 //put request to update a user :
 const updateUser = async (req, res) => {
-  console.log("req come", req.body, req.params.id)
+  // console.log("req come", req.body, req.params.id)
   const id = req.params.id;
   try {
     const user = await UserModel.findByIdAndUpdate(id, req.body);
@@ -95,14 +98,14 @@ const loginUser = async (req, res) => {
     if (!isPass) throw new ApiError(400, "invalid password");
 
     const refreshToken = jwt.sign({}, process.env.refreshSecret, {
-      expiresIn: 119,
+      expiresIn: "1h",
     });
     const accessToken = jwt.sign({}, process.env.accessSecret, {
-      expiresIn: 40,
+      expiresIn: "7d",
     });
-    console.log(accessToken, refreshToken);
-    res.cookie("accessToken", accessToken);
-    res.cookie("refreshToken", refreshToken);
+    // console.log(accessToken, refreshToken);
+    res.cookie("accessToken", accessToken, { httpOnly : true , sameSite : "none",secure:true});
+    res.cookie("refreshToken", refreshToken,{ httpOnly : true , sameSite : "none",secure:true});
     res.send(new ApiResponse(200, user, "User logged in successfully"));
   } catch (error) {
     res.status(500).send({ message: error.message, ...error });
@@ -112,19 +115,13 @@ const loginUser = async (req, res) => {
 // get request for logout :
 const logoutUser = async (req, res) => {
   const token = req.cookies.refreshToken;
+  // console.log("coo",req.cookies,new Date().getTime().toLocaleString());
   try {
     if (!token) throw new ApiError(400, "token is required");
 
     const revokedToken = await TokenModel.findOne({ token });
     if (revokedToken) {
-      res
-        .status(400)
-        .send(
-          new ApiResponse(400, null, [
-            "User already logged out",
-            { revokedAt: revokedToken.revokedAt },
-          ])
-        );
+      throw new ApiError(400, "token already revoked");
     }
 
     // blacklist the token

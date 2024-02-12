@@ -32,6 +32,20 @@ const createProduct = async (req, res) => {
   }
 };
 
+// find a single product by id
+const findProductById = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const product = await ProductModel.findById(id);
+    if (!product) {
+      throw new ApiError(400, "Product not found");
+    }
+    res.status(200).send(new ApiResponse(200, product, "Product found"));
+  } catch (error) {
+    res.status(500).send({ message: error.message, ...error });
+  }
+}
+
 // get request to retrieve all products :
 const findAllProducts = async (req, res) => {
   try {
@@ -48,13 +62,15 @@ const findAllProducts = async (req, res) => {
 // find protucts by query
 const findProductsByQuery = async (req, res) => {
   const query = req.query;
-  console.log(query)
+  // console.log(query)
   try {
     const data = await ProductModel.find(query);
     if (!data) {
       throw new ApiError(400, "Products not found");
     }
+    // console.log(data)
     res.status(200).send(new ApiResponse(200, data, "Products found"));
+
   }
   catch (error) {
     res.status(500).send({ message: error.message, ...error });
@@ -89,5 +105,5 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, findAllProducts, findProductsByQuery, updateProduct, deleteProduct };
+module.exports = { createProduct, findAllProducts, findProductsByQuery, updateProduct, deleteProduct, findProductById };
 
