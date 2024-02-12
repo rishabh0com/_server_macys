@@ -26,7 +26,7 @@ app.get("/", async (req, res) => {
 // middleware
 app.use(express.json());
 app.use(cors({
-  origin: [ "http://localhost:5173","http://127.0.0.1:5173","http://192.168.92.144:5173"],
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173", "https://client-macys-ecommerce.vercel.app", "https://mcays.netlify.app"],
   credentials: true,
 }));
 
@@ -34,7 +34,7 @@ app.use(cors({
 // app.use(cors({origin:["http://localhost:5173"],credentials:true}));
 app.use(cookieParser());
 app.use((req, res, next) => {
-  console.log(`Method : ${req.method}`, "Path:", req.url, "Body:", req.body, "cookies:", {...req.cookies});
+  console.log(`Method : ${req.method}`, "Path:", req.url, "Body:", req.body, "cookies:", { ...req.cookies });
   next();
 })
 
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
-app.use("/cart",cartRoutes)
+app.use("/cart", cartRoutes)
 
 // listening the server
 app.listen(process.env.PORT || 8080, async () => {
