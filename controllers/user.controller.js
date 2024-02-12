@@ -103,7 +103,7 @@ const loginUser = async (req, res) => {
     const accessToken = jwt.sign({}, process.env.accessSecret, {
       expiresIn: "7d",
     });
-    // console.log(accessToken, refreshToken);
+    console.log(accessToken, refreshToken);
     res.cookie("accessToken", accessToken, { httpOnly: true, sameSite: "none", secure: true,});
     res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "none", secure: true, });
     res.send(new ApiResponse(200, user, "User logged in successfully"));
