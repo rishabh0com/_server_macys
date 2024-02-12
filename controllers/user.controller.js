@@ -104,8 +104,8 @@ const loginUser = async (req, res) => {
       expiresIn: "7d",
     });
     console.log(accessToken, refreshToken);
-    res.cookie("accessToken", accessToken, { httpOnly: true, sameSite: "none", secure: true,});
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "none", secure: true, });
+    res.cookie("accessToken", accessToken, { httpOnly: true,});
+    res.cookie("refreshToken", refreshToken, { httpOnly: true,});
     res.send(new ApiResponse(200, user, "User logged in successfully"));
   } catch (error) {
     res.status(500).send({ message: error.message, ...error });
