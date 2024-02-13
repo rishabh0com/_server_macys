@@ -1,37 +1,33 @@
 # REST API for macy's Ecommerce application
 
 This is a REST API's documentation for macy's Ecommerce application providing a REST
-API  model.
+API model.
 
 The entire application is contained within the `_server_macysEcommerce` file.
 
-
-
-
 ## Clone repo in your system
 
-   https://github.com/rishabh0com/server_macysEcommerce.git
-   
+https://github.com/rishabh0com/server_macysEcommerce.git
+
 ## Installation
 
-   npm install
+npm install
 
 ## Run the app
 
     nodemon index.js
 
-
 # REST API
 
 The REST API to the macy's ecommerce app is described below.
 
-## Get list of Things
+## User's Api's
 
-### Request for User's
+### Request for user registration
 
 `POST /users/register`
 
-    Accept: '{WithCredential : true}' http://localhost:8080/users/register
+    Accept: 'body:{firstName,lastName,email,password}' http://localhost:8080/users/register
 
 ### Response
 
@@ -46,303 +42,110 @@ The REST API to the macy's ecommerce app is described below.
         "password": "$2b$09$bYMcFsXwInAQBC6o/80iyeGzWFOs6/EKIiV2p01FmSk4Bu/k/bH..",
         "_id": "6dc9f2f48edg243cg50r2deb"
     }
+
 }
 
-## Create a new Thing
+### Request for user login
 
-### Request
+`POST /users/login`
 
-`POST /thing/`
+    Accept: 'body:{email,password}' http://localhost:8080/users/login
 
-    curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:7000/thing
+### Response + Cookies
 
-### Response
+    {
+    "statusCode": 200,
+    "success": true,
+    "message": "User logged in successfully",
+    "data": {
+        "_id": "65b4aa99be812e4dfeef42b6",
+        "firstName": "Demo",
+        "lastName": "Demo",
+        "email": "demo@com",
+        "password": "$2b$09$OOXtDd5anCfKOyKgcCuuTOleyDFPFGc4p66JwYA7NgQpWlWF.R6Ei",
+        "birthday": "01-12"
+    }
 
-    HTTP/1.1 201 Created
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 201 Created
-    Connection: close
-    Content-Type: application/json
-    Location: /thing/1
-    Content-Length: 36
+}
 
-    {"id":1,"name":"Foo","status":"new"}
+### Request for user logout
 
-## Get a specific Thing
+`GET /users/logout`
 
-### Request
-
-`GET /thing/id`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 36
-
-    {"id":1,"name":"Foo","status":"new"}
-
-## Get a non-existent Thing
-
-### Request
-
-`GET /thing/id`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/9999
+    Accept: '{withCredintial: true}' http://localhost:8080/users/logout
 
 ### Response
 
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
+{
+"statusCode": 200,
+"success": true,
+"message": "User logged out successfully",
+"data": null
+}
 
-    {"status":404,"reason":"Not found"}
+## Product Api's
 
-## Create another new Thing
+### Request for all products
 
-### Request
+`GET /products`
 
-`POST /thing/`
-
-    curl -i -H 'Accept: application/json' -d 'name=Bar&junk=rubbish' http://localhost:7000/thing
+    Accept: 'nothing' http://localhost:8080/products
 
 ### Response
 
-    HTTP/1.1 201 Created
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 201 Created
-    Connection: close
-    Content-Type: application/json
-    Location: /thing/2
-    Content-Length: 35
+{
+"statusCode": 200,
+"success": true,
+"message": "Products found",
+"data": [{},{},]
+}
 
-    {"id":2,"name":"Bar","status":null}
+## Cart Api's
 
-## Get list of Things again
+### Request for adding the product in cart
 
-### Request
+`POST /cart/add`
 
-`GET /thing/`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/
+    Accept: 'body: {userId,product}, {withCredintial: true}'
+    http://localhost:8080/cart/add?userId=userId
 
 ### Response
 
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 74
+{
+"statusCode": 200,
+"success": true,
+"message": "Products added successfully",
+"data": {product data--}
+}
 
-    [{"id":1,"name":"Foo","status":"new"},{"id":2,"name":"Bar","status":null}]
+### Request for finding user's products in cart
 
-## Change a Thing's state
+`GET /cart/find`
 
-### Request
-
-`PUT /thing/:id/status/changed`
-
-    curl -i -H 'Accept: application/json' -X PUT http://localhost:7000/thing/1/status/changed
+    Accept: '{withCredential: true}'
+    http://localhost:8080/cart/find?userId=userId
 
 ### Response
 
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 40
+{
+"statusCode": 200,
+"success": true,
+"message": "Products retrieved successfully",
+"data": {product data--}
+}
 
-    {"id":1,"name":"Foo","status":"changed"}
+### Request for removing the product from cart
 
-## Get changed Thing
+`DELETE /cart/delete/:id`
 
-### Request
-
-`GET /thing/id`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+    Accept: '{withCredential: true}'
+    http://localhost:8080/cart/delete/:id
 
 ### Response
 
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 40
-
-    {"id":1,"name":"Foo","status":"changed"}
-
-## Change a Thing
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed2"}
-
-## Attempt to change a Thing using partial params
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'status=changed3' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed3"}
-
-## Attempt to change a Thing using invalid params
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'id=99&status=changed4' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed4"}
-
-## Change a Thing using the _method hack
-
-### Request
-
-`POST /thing/:id?_method=POST`
-
-    curl -i -H 'Accept: application/json' -X POST -d 'name=Baz&_method=PUT' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Baz","status":"changed4"}
-
-## Change a Thing using the _method hack in the url
-
-### Request
-
-`POST /thing/:id?_method=POST`
-
-    curl -i -H 'Accept: application/json' -X POST -d 'name=Qux' http://localhost:7000/thing/1?_method=PUT
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: text/html;charset=utf-8
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Delete a Thing
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
-
-### Response
-
-    HTTP/1.1 204 No Content
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 204 No Content
-    Connection: close
-
-
-## Try to delete same Thing again
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Get deleted Thing
-
-### Request
-
-`GET /thing/1`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Delete a Thing using the _method hack
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X POST -d'_method=DELETE' http://localhost:7000/thing/2/
-
-### Response
-
-    HTTP/1.1 204 No Content
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 204 No Content
-    Connection: close
+{
+"statusCode": 200,
+"success": true,
+"message": "Products retrieved successfully",
+"data": {product data--}
+}
