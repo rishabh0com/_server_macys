@@ -5,7 +5,9 @@ require("dotenv").config();
 
 // function to authenticate the user
 const authUser = (req, res, next) => {
-    const { accessToken, refreshToken } = req.cookies;
+    // const { accessToken, refreshToken } = req.cookies;
+    const accessToken = req.headers.authorization.split(",")[0]
+    const refreshToken = req.headers.authorization.split(",")[1];
     try {
         if (!accessToken && !refreshToken)
             // if no token is provided
@@ -26,7 +28,7 @@ const authUser = (req, res, next) => {
                         });
                         if (!newAccessToken)
                             throw new ApiError(500, "internal server error");
-                        res.cookie("accessToken", newAccessToken);
+                        res.send({"accessToken": newAccessToken});
                         next(); // if token is valid
                         // res.send(
                         //     new ApiResponse(200, null, "token generated successfully") //
