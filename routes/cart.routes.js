@@ -10,6 +10,6 @@ cartRoutes.post("/add",authUser, cartController.createCart);
 // Get all Carts from the database
 cartRoutes.get("/find",authUser, cartController.findAllCart);
 // delete cart item 
-cartRoutes.delete("/delete/:id",authUser, cartController.deleteCart);
+cartRoutes.delete("/delete/",authUser, cartController.deleteCart);
 
 module.exports = { cartRoutes };
