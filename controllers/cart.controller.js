@@ -31,12 +31,21 @@ const findAllCart = async (req, res) => {
 
 // delete request to delete a cart item
 const deleteCart = async (req, res) => {
-    const id = req.params.id;
+    const {userId,proId} = req.query;
+    console.log("pro",req.query)
     try {
-        const cart = await CartItemModel.findByIdAndDelete(id);
+        const deleteItem = await CartItemModel.find({ userId: userId });
+        // console.log("pro", deleteItem)
+        // deleteItem.forEach(element => {
+        //     console.log(element._id)
+        // });
+        const dItem = deleteItem.filter((item) => item.product.product._id == proId);
+        // console.log("pro2", dItem)
+        const cart = await CartItemModel.findByIdAndDelete(dItem[0]._id);
         if (!cart) throw new ApiError(400, "Product not found");
         res.send(new ApiResponse(200, cart, "Product deleted successfully"));
     } catch (error) {
+        console.log(error)
         res.status(500).send({ message: error.message, ...error });
     }
 };

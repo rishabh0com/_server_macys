@@ -6,7 +6,7 @@ const productRoutes = express.Router();
 // middleware
 
 // Create a new Product
-productRoutes.post("/add",authUser, productController.createProduct);
+productRoutes.post("/add", productController.createProduct);
 
 // Retrieve a single Product with id
 productRoutes.get("/:id", productController.findProductById);
